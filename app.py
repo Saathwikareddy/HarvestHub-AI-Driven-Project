@@ -1,9 +1,27 @@
 import streamlit as st
 from supabase import create_client
 import bcrypt
+def set_bg_image():
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+set_bg_image()
+
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Harvest Hub", page_icon="🌾")
+
 
 # ---------------- SUPABASE ----------------
 # Use Streamlit Secrets for cloud deployment
@@ -108,3 +126,4 @@ if st.session_state.logged_in:
         st.session_state.role = None
         st.session_state.email = None
         st.success("Logged out successfully")
+
