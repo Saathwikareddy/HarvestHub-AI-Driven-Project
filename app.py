@@ -10,7 +10,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+        background-image: url("https://static.vecteezy.com/system/resources/thumbnails/037/996/577/small_2x/ai-generated-cotton-flower-branch-on-nature-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -149,4 +149,5 @@ if st.session_state.logged_in:
         st.session_state.email = None
         st.session_state.page = "Login"
         st.success("Logged out successfully")
+
 
