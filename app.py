@@ -6,7 +6,7 @@ def set_bg_image():
         f"""
         <style>
         .stApp {{
-            background-image: url("https://tse4.mm.bing.net/th/id/OIP.iWR2UKrcZ2VCLGq2Ra34MgHaHh?pid=Api&P=0&h=180");
+            background-image: url("https://static.vecteezy.com/system/resources/thumbnails/037/996/577/small_2x/ai-generated-cotton-flower-branch-on-nature-photo.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -126,5 +126,6 @@ if st.session_state.logged_in:
         st.session_state.role = None
         st.session_state.email = None
         st.success("Logged out successfully")
+
 
 
