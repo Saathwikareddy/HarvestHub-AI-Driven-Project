@@ -10,21 +10,31 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://static.vecteezy.com/system/resources/thumbnails/037/996/577/small_2x/ai-generated-cotton-flower-branch-on-nature-photo.jpg");
+        background-image: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
     }
+
+    /* Main card */
     .block-container {
-        background-color: rgba(255, 255, 255, 0.88);
+        background-color: rgba(236, 247, 241, 0.92); /* soft mint green */
         padding: 2rem;
-        border-radius: 16px;
+        border-radius: 18px;
         max-width: 700px;
+        box-shadow: 0 10px 30px rgba(0, 60, 20, 0.25);
+        border: 1px solid rgba(0, 120, 60, 0.25);
+    }
+
+    /* Headings */
+    h2, h3 {
+        color: #1b5e20;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 # ---------------- SUPABASE ----------------
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
@@ -139,3 +149,4 @@ if st.session_state.logged_in:
         st.session_state.email = None
         st.session_state.page = "Login"
         st.success("Logged out successfully")
+
