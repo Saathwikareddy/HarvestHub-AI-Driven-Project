@@ -1,34 +1,34 @@
 import streamlit as st
 from supabase import create_client
 import bcrypt
-def set_bg_image():
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("https://static.vecteezy.com/system/resources/thumbnails/037/996/577/small_2x/ai-generated-cotton-flower-branch-on-nature-photo.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-set_bg_image()
-
 
 # ---------------- CONFIG ----------------
-st.set_page_config(page_title="Harvest Hub", page_icon="🌾")
+st.set_page_config(page_title="Harvest Hub", page_icon="🌾", layout="centered")
 
+# ---------------- BACKGROUND (CROPS) ----------------
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url("https://static.vecteezy.com/system/resources/thumbnails/037/996/577/small_2x/ai-generated-cotton-flower-branch-on-nature-photo.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .block-container {
+        background-color: rgba(255, 255, 255, 0.88);
+        padding: 2rem;
+        border-radius: 16px;
+        max-width: 700px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ---------------- SUPABASE ----------------
-# Use Streamlit Secrets for cloud deployment
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-
-# Create Supabase client
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ---------------- SESSION ----------------
@@ -37,12 +37,27 @@ if "logged_in" not in st.session_state:
     st.session_state.role = None
     st.session_state.email = None
 
-# ---------------- SIDEBAR ----------------
-menu = st.sidebar.selectbox("Menu", ["Register", "Login"])
+if "page" not in st.session_state:
+    st.session_state.page = "Register"
+
+# ---------------- TOP NAV BAR ----------------
+st.markdown("<h2 style='text-align:center;'>🌾 Harvest Hub</h2>", unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("📝 Register", use_container_width=True):
+        st.session_state.page = "Register"
+
+with col2:
+    if st.button("🔐 Login", use_container_width=True):
+        st.session_state.page = "Login"
+
+st.divider()
 
 # ---------------- REGISTER ----------------
-if menu == "Register":
-    st.title("🌱 Harvest Hub - Create Account")
+if st.session_state.page == "Register" and not st.session_state.logged_in:
+    st.subheader("Create Account")
 
     role = st.selectbox(
         "Account Type",
@@ -62,13 +77,11 @@ if menu == "Register":
         elif password != confirm_password:
             st.error("Passwords do not match")
         else:
-            # Check if user already exists
             existing = supabase.table("users").select("id").eq("email", email).execute()
             if existing.data:
                 st.error("Email already registered")
             else:
                 hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
                 supabase.table("users").insert({
                     "role": role,
                     "email": email,
@@ -78,11 +91,12 @@ if menu == "Register":
                     "phone": phone
                 }).execute()
 
-                st.success("Account created successfully! You can now log in.")
+                st.success("Account created successfully! Please login.")
+                st.session_state.page = "Login"
 
 # ---------------- LOGIN ----------------
-if menu == "Login":
-    st.title("🔐 Harvest Hub - Login")
+if st.session_state.page == "Login" and not st.session_state.logged_in:
+    st.subheader("Login")
 
     login_email = st.text_input("Email")
     login_password = st.text_input("Password", type="password")
@@ -95,13 +109,11 @@ if menu == "Login":
 
         if res.data:
             stored_pw = res.data[0]["password"]
-
             if bcrypt.checkpw(login_password.encode(), stored_pw.encode()):
                 st.session_state.logged_in = True
                 st.session_state.email = login_email
                 st.session_state.role = res.data[0]["role"]
-
-                st.success(f"Welcome! Logged in as {st.session_state.role}")
+                st.success("Login successful 🎉")
             else:
                 st.error("Incorrect password")
         else:
@@ -111,21 +123,19 @@ if menu == "Login":
 if st.session_state.logged_in:
     st.divider()
     st.header("📊 Dashboard")
-    st.write("Logged in as:", st.session_state.email)
-    st.write("Role:", st.session_state.role)
+    st.write("👤 Email:", st.session_state.email)
+    st.write("🧾 Role:", st.session_state.role)
 
     if st.session_state.role == "Farmer":
-        st.info("🌾 Farmer Dashboard (Add products, manage inventory)")
+        st.info("🌾 Farmer Dashboard – Manage crops & inventory")
     elif st.session_state.role == "Customer":
-        st.info("🛒 Customer Dashboard (Browse & order produce)")
+        st.info("🛒 Customer Dashboard – Browse & order produce")
     else:
         st.info("🏢 General Dashboard")
 
-    if st.button("Logout"):
+    if st.button("🚪 Logout"):
         st.session_state.logged_in = False
         st.session_state.role = None
         st.session_state.email = None
+        st.session_state.page = "Login"
         st.success("Logged out successfully")
-
-
-
