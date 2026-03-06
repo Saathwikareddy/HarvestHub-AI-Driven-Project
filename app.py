@@ -67,8 +67,7 @@ if menu == "Register":
     confirm_password = st.text_input("Confirm Password", type="password")
 
     if st.button("Create Account"):
-
-        if not all([email, username, fullname, password, confirm_password]):
+        if not all([email.strip(), username.strip(), fullname.strip(), phone.strip(), password.strip(), confirm_password.strip()]):
             st.error("Please fill all required fields")
 
         elif password != confirm_password:
@@ -238,3 +237,4 @@ if st.session_state.logged_in:
         st.session_state.email = None
 
         st.success("Logged out successfully")
+
